@@ -1,0 +1,46 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: ecolokal-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ecolokal
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./migrations:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    networks:
+      - ecolokal-network
+
+  app:
+    build: .
+    container_name: ecolokal-app
+    environment:
+      APP_PORT: 8080
+      APP_ENV: production
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: ecolokal
+      DB_SSLMODE: disable
+      JWT_SECRET: ${JWT_SECRET:-your-super-secret-key}
+      JWT_EXPIRE_HOURS: 24
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    networks:
+      - ecolokal-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  ecolokal-network:
+    driver: bridge
