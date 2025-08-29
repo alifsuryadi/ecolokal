@@ -29,18 +29,21 @@ EcoLokal adalah REST API untuk mengelola ekosistem Bank Sampah di tingkat RT/RW 
 ## 🚀 Quick Start
 
 ### 1. Clone Repository
+
 ```bash
 git clone https://github.com/alifsuryadi/ecolokal.git
 cd ecolokal
 ```
 
 ### 2. Install Dependencies
+
 ```bash
 go mod download
 go mod tidy
 ```
 
 ### 3. Install Development Tools
+
 ```bash
 # Install Swagger CLI
 go install github.com/swaggo/swag/cmd/swag@latest
@@ -52,6 +55,7 @@ go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 ### 4. Setup Database
 
 #### Option A: Using Docker (Recommended)
+
 ```bash
 # Start PostgreSQL database with Docker Compose
 docker-compose up -d db
@@ -62,6 +66,7 @@ docker exec -i ecolokal-db psql -U postgres -d ecolokal < migrations/001_initial
 ```
 
 #### Option B: Local PostgreSQL
+
 ```bash
 # Create database
 psql -U postgres -c "CREATE DATABASE ecolokal;"
@@ -71,18 +76,21 @@ psql -h localhost -p 5432 -U postgres -d ecolokal -f migrations/001_initial_sche
 ```
 
 ### 5. Configure Environment
+
 Copy the environment configuration:
+
 ```bash
 cp .env.example .env
 ```
 
 Edit `.env` file with your configuration:
+
 ```env
 # Application Configuration
 APP_PORT=8080
 APP_ENV=development
 
-# Database Configuration  
+# Database Configuration
 DB_HOST=localhost
 DB_PORT=5432
 DB_USER=postgres
@@ -96,21 +104,24 @@ JWT_EXPIRE_HOURS=24
 ```
 
 ### 6. Generate API Documentation
+
 ```bash
 # Generate swagger documentation
 swag init -g cmd/api/main.go
 ```
 
 ### 7. Build and Run
+
 ```bash
 # Build the application
-go build -o bin/ecolokal.exe ./cmd/api
+go build -o api.exe ./cmd/api
 
 # Run the application
-./bin/ecolokal.exe
+./api.exe
 ```
 
 Or using Makefile:
+
 ```bash
 # Build and run
 make dev
@@ -123,6 +134,7 @@ make run
 ## 🐳 Docker Development
 
 ### Full Stack with Docker Compose
+
 ```bash
 # Start database and application
 docker-compose up -d
@@ -135,6 +147,7 @@ docker-compose logs -f app
 ```
 
 ### Database Only
+
 ```bash
 # Start only database
 make docker-up
@@ -146,12 +159,14 @@ make docker-down
 ## 📚 API Documentation
 
 After starting the application, access the Swagger documentation at:
-- **Swagger UI**: http://localhost:8080/api/docs/index.html
-- **Swagger JSON**: http://localhost:8080/api/docs/doc.json
+
+- **Swagger UI**: http://localhost:8080/swagger/index.html
+- **Swagger JSON**: http://localhost:8080/swagger/doc.json
 
 ## 🔧 Development Commands
 
 ### Using Makefile
+
 ```bash
 make help                # Show all available commands
 make build               # Build the application
@@ -170,9 +185,10 @@ make lint                # Run linter
 ```
 
 ### Manual Commands
+
 ```bash
 # Build
-go build -o bin/ecolokal.exe ./cmd/api
+go build -o api.exe ./cmd/api
 
 # Run tests
 go test -v ./...
@@ -230,30 +246,37 @@ Authorization: Bearer <your-jwt-token>
 ```
 
 ### Default Users
+
 After running migrations, you'll have:
+
 - **Admin**: `admin@ecolokal.com` (password needs to be hashed and set in migration)
 
 ## 📊 API Endpoints
 
 ### Authentication
+
 - `POST /api/auth/register` - Register new user
 - `POST /api/auth/login` - Login user
 
 ### Users
+
 - `GET /api/users/profile` - Get user profile
 - `PUT /api/users/profile` - Update user profile
 - `GET /api/users/points` - Get user points
 
 ### Pickups (Warga)
+
 - `POST /api/pickups` - Create pickup request
 - `GET /api/pickups` - Get user's pickup requests
 
 ### Pickups (Petugas)
+
 - `GET /api/pickups/assigned` - Get assigned pickups
 - `PUT /api/pickups/:id/status` - Update pickup status
 - `PUT /api/pickups/:id/items` - Update pickup items with actual weights
 
 ### Admin
+
 - `GET /api/admin/pickups` - Get all pickup requests
 - `PUT /api/admin/pickups/:id/assign` - Assign pickup to petugas
 - `POST /api/admin/waste-types` - Create waste type
@@ -261,9 +284,11 @@ After running migrations, you'll have:
 - `DELETE /api/admin/waste-types/:id` - Delete waste type
 
 ### Waste Types
+
 - `GET /api/waste-types` - Get all waste types
 
 ### Transactions
+
 - `GET /api/transactions` - Get user transactions
 - `POST /api/transactions` - Create transaction (point redemption)
 
@@ -284,6 +309,7 @@ go test -v ./internal/usecase
 ## 🚀 Deployment
 
 ### Environment Variables for Production
+
 ```env
 APP_ENV=production
 JWT_SECRET=your-very-secure-secret-key
@@ -292,6 +318,7 @@ DB_PASSWORD=your-secure-db-password
 ```
 
 ### Docker Production
+
 ```bash
 # Build production image
 docker build -t ecolokal:latest .
@@ -301,6 +328,7 @@ docker-compose -f docker-compose.prod.yml up -d
 ```
 
 ### Database Migration in Production
+
 ```bash
 # Run migrations
 psql $DATABASE_URL -f migrations/001_initial_schema.sql
@@ -309,12 +337,14 @@ psql $DATABASE_URL -f migrations/001_initial_schema.sql
 ## 📝 Development Guidelines
 
 ### Code Structure
+
 - **Domain Layer**: Business entities and rules
 - **Repository Layer**: Data access abstraction
 - **Usecase Layer**: Business logic implementation
 - **Handler Layer**: HTTP request/response handling
 
 ### Adding New Features
+
 1. Define domain models in `internal/domain/`
 2. Create repository interface and implementation
 3. Implement business logic in usecase
@@ -324,6 +354,7 @@ psql $DATABASE_URL -f migrations/001_initial_schema.sql
 7. Write tests
 
 ### Database Changes
+
 1. Create new migration file in `migrations/`
 2. Update domain models if needed
 3. Update repository methods
@@ -334,15 +365,17 @@ psql $DATABASE_URL -f migrations/001_initial_schema.sql
 ### Common Issues
 
 1. **Database Connection Failed**
+
    ```bash
    # Check PostgreSQL is running
    docker-compose ps
-   
+
    # Check logs
    docker-compose logs db
    ```
 
 2. **Build Errors**
+
    ```bash
    # Clean and rebuild
    go clean -modcache
@@ -351,6 +384,7 @@ psql $DATABASE_URL -f migrations/001_initial_schema.sql
    ```
 
 3. **Port Already in Use**
+
    ```bash
    # Change APP_PORT in .env file or kill the process
    netstat -tulpn | grep :8080
@@ -364,6 +398,7 @@ psql $DATABASE_URL -f migrations/001_initial_schema.sql
    ```
 
 ### Logs
+
 - Application logs are written to stdout
 - Database logs: `docker-compose logs db`
 - Application logs: `docker-compose logs app`
@@ -377,6 +412,7 @@ psql $DATABASE_URL -f migrations/001_initial_schema.sql
 5. Create Pull Request
 
 ### Code Style
+
 - Use `go fmt` for formatting
 - Follow Go naming conventions
 - Add comments for exported functions
@@ -393,12 +429,14 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 For support and questions:
+
 - Email: support@ecolokal.com
 - Issues: [GitHub Issues](https://github.com/alifsuryadi/ecolokal/issues)
 
 ## 🔄 Changelog
 
 ### v1.0.0
+
 - Initial release
 - User authentication and authorization
 - Pickup request management

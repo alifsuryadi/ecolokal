@@ -99,9 +99,9 @@ CREATE TRIGGER update_waste_types_updated_at BEFORE UPDATE ON waste_types
 CREATE TRIGGER update_pickup_requests_updated_at BEFORE UPDATE ON pickup_requests
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
--- Insert default admin
+-- Insert default admin (password: admin123)
 INSERT INTO users (name, email, password, role) 
-VALUES ('Admin EcoLokal', 'admin@ecolokal.com', '$2a$10$YourHashedPasswordHere', 'admin');
+VALUES ('Admin EcoLokal', 'admin@ecolokal.com', '$2a$10$ZhEohjzRnA5PIv628avFUOOSomf5gLe999XM/mLWs//mrVRID5IV.', 'admin');
 
 -- Insert default waste types
 INSERT INTO waste_types (name, point_per_kg, description) VALUES
